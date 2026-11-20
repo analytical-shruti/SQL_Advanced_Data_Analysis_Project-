@@ -26,12 +26,7 @@ three CSV files (60,398 sales rows / 18,484 customers / 295 products).
 
 /*
 ================================================================
-00. OPTIONAL SETUP - run only if the tables do not exist yet
-    (If you already imported with MySQL Workbench's Table Data
-     Import Wizard, skip this block.)
-    LOAD DATA LOCAL needs:  SET GLOBAL local_infile = 1;
-    Empty CSV cells are converted to NULL with NULLIF().
-    Change the file paths to your own folder.
+
 ================================================================
 */
 
