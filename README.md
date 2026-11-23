@@ -10,7 +10,7 @@ An end-to-end MySQL analytics project on a sales data warehouse (gold schema). I
 
 An end-to-end **MySQL analytics project** on a sales data warehouse (`gold` schema). It starts with Exploratory Data Analysis (EDA) and moves into advanced analytics: trend analysis, cumulative metrics, performance benchmarking, part-to-whole analysis, segmentation, and reusable **customer** and **product** reporting views.
 
-![Key Results](images/00_key_results.png)
+
 
 ---
 
@@ -101,9 +101,7 @@ flowchart LR
 ### 🏆 Ranking Analysis
 Top and bottom products by revenue (`ORDER BY` + `LIMIT`, `ROW_NUMBER()`):
 
-![Top and Bottom Products](images/03a_top_bottom_products.png)
 
-![Top Subcategories](images/03b_top_subcategories.png)
 
 ---
 
