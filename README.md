@@ -368,7 +368,7 @@ Through this project, I strengthened my ability to:
 
 **Shruti Kumbhare**
 
-Aspiring Data Analyst | SQL | MySQL | Data Analytics | Business Intelligence
+ Data Analyst | SQL | MySQL | Data Analytics | Business Intelligence
 
 This project reflects my hands-on experience in using SQL to solve analytical problems and translate business data into actionable insights.
 
