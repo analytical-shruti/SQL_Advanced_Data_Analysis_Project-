@@ -1,212 +1,383 @@
-# SQL_Advanced_Data_Analysis_Project-
-An end-to-end MySQL analytics project on a sales data warehouse (gold schema). It starts with Exploratory Data Analysis (EDA) and moves into advanced analytics: trend analysis, cumulative metrics, performance benchmarking, part-to-whole analysis, segmentation, and reusable customer and product reporting views.
+# 📊 Advanced SQL Data Analytics Project
+### Turning Raw Sales Data into Meaningful Business Insights
 
-# 📊 SQL Advanced Data Analytics
+<p align="center">
+  <img src="https://img.shields.io/badge/MySQL-8.0-blue?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQL-Advanced-orange?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Analytics-Business%20Intelligence-00BFA6?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Project-End--to--End-purple?style=for-the-badge" />
+</p>
 
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-![Skills](https://img.shields.io/badge/Skills-CTEs%20%7C%20Window%20Functions%20%7C%20Views-blue)
-![Domain](https://img.shields.io/badge/Domain-Sales%20Analytics-green)
-![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
-
-An end-to-end **MySQL analytics project** on a sales data warehouse (`gold` schema). It starts with Exploratory Data Analysis (EDA) and moves into advanced analytics: trend analysis, cumulative metrics, performance benchmarking, part-to-whole analysis, segmentation, and reusable **customer** and **product** reporting views.
-
-
-
----
-
-## 📌 Project Highlights
-
-- Analyzed **monthly, yearly and cumulative sales trends**, identifying **$16.34M in revenue in 2013**, a **179.77% growth over 2012**.
-- Evaluated **performance** and conducted **part-to-whole analysis**, identifying **bikes as the main revenue contributor at 96.46% of total revenue ($28.32M)**.
-- Created **customer and product SQL reports** using **CTEs and Window Functions** to show how **VIP, regular and new customers** perform by examining how products are performing.
+<p align="center">
+  <b>An end-to-end SQL analytics project focused on exploring sales data, identifying business trends, measuring performance, and generating actionable insights using MySQL.</b>
+</p>
 
 ---
 
-## 🗂️ Dataset
+## 🚀 Project Overview
 
-| Table | Type | Rows | Description |
-|---|---|---|---|
-| `gold.fact_sales` | Fact | 60,398 | Order lines: order number, dates, sales amount, quantity, price |
-| `gold.dim_customers` | Dimension | 18,484 | Customer details: name, country, gender, birthdate |
-| `gold.dim_products` | Dimension | 295 | Product details: category, subcategory, cost |
+This project demonstrates an end-to-end SQL analytics workflow using a sales data warehouse (`gold` schema).
 
-**Data validation:** 0 duplicate customer keys, 0 duplicate product keys, 0 unmatched foreign keys in `fact_sales`, so joins don't drop rows. 19 sales rows with a NULL `order_date` are excluded from time-based analysis.
+The objective is to transform raw sales data into meaningful business insights through Exploratory Data Analysis (EDA), Advanced Analytics, Customer Segmentation, Product Performance Analysis, and reusable SQL reporting views.
+
+The project covers real-world analytical techniques commonly used by Data Analysts and Business Intelligence professionals.
+
+## 📌 Key Business Insights
+
+<table>
+<tr>
+<td align="center" width="33%">
+<h2>💰 $29.35M</h2>
+<b>Total Sales</b>
+</td>
+<td align="center" width="33%">
+<h2>👥 18,484</h2>
+<b>Total Customers</b>
+</td>
+<td align="center" width="33%">
+<h2>📦 60,423</h2>
+<b>Total Quantity</b>
+</td>
+</tr>
+<tr>
+<td align="center">
+<h2>🛒 27,659</h2>
+<b>Unique Orders</b>
+</td>
+<td align="center">
+<h2>📈 179.77%</h2>
+<b>2013 YoY Growth</b>
+</td>
+<td align="center">
+<h2>🚴 96.46%</h2>
+<b>Bike Revenue Share</b>
+</td>
+</tr>
+</table>
+
+### 🔍 Highlights
+
+- Generated approximately **$29.36 million** in total sales.
+- Identified a **179.77% year-over-year sales growth** in 2013 compared to 2012.
+- Discovered that Bikes contributed **96.46% of total revenue**.
+- Segmented customers into VIP, Regular, and New categories.
+- Identified high-performing products contributing the majority of sales.
+- Developed reusable customer and product reporting views.
+
+---
+
+## 🏗️ Project Architecture
+
+The project follows a structured analytical workflow:
+
+```mermaid
+flowchart TD
+    A["📂 Raw Sales Data"] --> B["🗄️ MySQL Gold Schema"]
+    B --> C["🔍 Exploratory Data Analysis"]
+    C --> D["📊 Advanced Analytics"]
+    D --> E["📈 Trend & Cumulative Analysis"]
+    E --> F["⚖️ Performance & Part-to-Whole"]
+    F --> G["🧩 Customer & Product Segmentation"]
+    G --> H["📋 Reporting SQL Views"]
+    H --> I["💡 Business Insights"]
+    
+    style A fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style B fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style I fill:#dcfce7,stroke:#16a34a,color:#14532d
+```
+
+## 🗂️ Dataset Overview
+
+The project uses three tables from the Gold layer of a sales data warehouse.
+
+| Table | Records | Description |
+|---|---:|---|
+| `gold.fact_sales` | 60,398 | Sales transactions |
+| `gold.dim_customers` | 18,484 | Customer information |
+| `gold.dim_products` | 295 | Product information |
+
+### Database Relationship
 
 ```mermaid
 erDiagram
-    DIM_CUSTOMERS ||--o{ FACT_SALES : "customer_key"
-    DIM_PRODUCTS  ||--o{ FACT_SALES : "product_key"
-    FACT_SALES {
-        string order_number
-        int product_key
-        int customer_key
-        date order_date
-        int sales_amount
-        int quantity
-        int price
-    }
+    DIM_CUSTOMERS ||--o{ FACT_SALES : customer_key
+    DIM_PRODUCTS ||--o{ FACT_SALES : product_key
+
     DIM_CUSTOMERS {
-        int customer_key
+        int customer_key PK
         string first_name
         string last_name
         string country
         string gender
         date birthdate
     }
+
     DIM_PRODUCTS {
-        int product_key
+        int product_key PK
         string product_name
         string category
         string subcategory
         int cost
     }
+
+    FACT_SALES {
+        string order_number
+        int product_key FK
+        int customer_key FK
+        date order_date
+        int sales_amount
+        int quantity
+        int price
+    }
 ```
+
+**Data Quality Checks:**
+- No duplicate customer keys.
+- No duplicate product keys.
+- No unmatched foreign keys in the sales table.
+- 19 records with NULL order dates excluded from time-based analysis.
 
 ---
 
-## 🛠️ Tech Stack & SQL Concepts
+## 🔎 Part 1: Exploratory Data Analysis (EDA)
 
-- **Database:** MySQL 8.0
-- **Concepts:** CTEs, Window Functions (`SUM() OVER`, `AVG() OVER`, `LAG`, `ROW_NUMBER`), `CASE WHEN` segmentation, Views, Joins, Aggregations, Date functions, `UNION ALL`
-- **Techniques:** EDA, time-series analysis, running totals, moving averages, YoY analysis, part-to-whole, customer and product segmentation
+The first phase focused on understanding the database structure and identifying important business metrics.
 
-```mermaid
-flowchart LR
-    A[Database Exploration] --> B[Dimensions & Dates]
-    B --> C[Measures & KPIs]
-    C --> D[Magnitude & Ranking]
-    D --> E[Changes Over Time]
-    E --> F[Cumulative]
-    F --> G[Performance]
-    G --> H[Part-to-Whole]
-    H --> I[Segmentation]
-    I --> J[Customer & Product Reports]
-```
+**Key Activities:**
+- Database and table exploration using `INFORMATION_SCHEMA`.
+- Examining customer countries and product hierarchies.
+- Identifying the sales date range.
+- Calculating essential business KPIs.
+- Combining KPI results using `UNION ALL`.
 
----
+### Business KPIs
 
-# Part 1: Exploratory Data Analysis (EDA)
-
-**What I did:** explored tables and columns via `INFORMATION_SCHEMA`, checked countries and the product hierarchy, found the order date range (2010-12-29 to 2014-01-28), and built a consolidated KPI report with `UNION ALL`.
-
-| KPI | Value |
-|---|---|
+| KPI | Result |
+|---|---:|
 | Total Sales | 29,356,250 |
 | Total Quantity | 60,423 |
-| Average Price | ~486.04 |
+| Average Selling Price | 486.04 |
 | Unique Orders | 27,659 |
 | Total Products | 295 |
 | Total Customers | 18,484 |
 
+---
 
+## 📈 Part 2: Advanced SQL Analytics
 
+This section focuses on extracting deeper insights using advanced SQL techniques.
 
+### 1. Changes Over Time Analysis
 
-# Part 2: Advanced Analytics
+Analyzed monthly and yearly trends in:
+- Total Sales
+- Customer Growth
+- Quantity Sold
+- Year-over-Year Revenue Growth
 
-### 📈 Changes Over Time
-Monthly and yearly sales, customers and quantity. **2013 revenue reached $16.34M, up 179.77% from 2012.**
+**Key Finding:** Sales revenue reached $16.34M in 2013, representing 179.77% growth compared to 2012.
 
-```sql
-WITH yearly_sales AS (
-    SELECT YEAR(order_date) AS order_year, SUM(sales_amount) AS total_sales
-    FROM gold.fact_sales
-    WHERE order_date IS NOT NULL
-    GROUP BY YEAR(order_date)
-)
-SELECT order_year, total_sales,
-       LAG(total_sales) OVER (ORDER BY order_year) AS previous_year_sales,
-       ROUND((total_sales - LAG(total_sales) OVER (ORDER BY order_year)) * 100.0
-             / NULLIF(LAG(total_sales) OVER (ORDER BY order_year), 0), 2) AS yoy_growth_pct
-FROM yearly_sales
-ORDER BY order_year;
-```
+SQL techniques:
+`YEAR()`, `MONTH()`, `GROUP BY`, `LAG()`
 
-![Yearly Growth](images/04a_yearly_growth.png)
+### 2. Cumulative Analysis
 
-![Monthly Trend](images/04b_monthly_trend.png)
+Calculated running totals of sales to understand revenue progression over time.
 
-### ➕ Cumulative Analysis
-Running total of sales that restarts every year, using a window function:
+**Techniques Used:**
+- Window Functions
+- `SUM() OVER()`
+- `PARTITION BY`
+- `ORDER BY`
 
-```sql
-SUM(total_sales) OVER (PARTITION BY YEAR(order_month) ORDER BY order_month) AS running_total_sales
-```
+### 3. Performance Analysis
 
-![Cumulative Analysis](images/05_cumulative_analysis.png)
+Evaluated product performance by comparing yearly sales against:
+- Individual product average sales.
+- Previous year's sales performance.
 
-### ⚖️ Performance Analysis
-Each product's yearly sales compared with **its own average** (`AVG() OVER`) and the **previous year** (`LAG()`), flagged as *Above/Below Avg* and *Increase/Decrease*.
+**Key Techniques:**
+- `AVG() OVER()`
+- `LAG()`
+- CASE WHEN statements
 
-![Performance Analysis](images/06_performance_analysis.png)
+### 4. Part-to-Whole Analysis
 
-### 🥧 Part-to-Whole Analysis
-**Bikes generate 96.46% of total revenue ($28.32M)**, far ahead of Accessories (2.39%) and Clothing (1.16%).
+Identified the revenue contribution of each product category.
 
-![Part to Whole](images/07_part_to_whole.png)
+| Category | Revenue Contribution |
+|---|---:|
+| Bikes | 96.46% |
+| Accessories | 2.39% |
+| Clothing | 1.16% |
 
-### 🧩 Data Segmentation
+**Key Finding:** Bikes are the dominant revenue-generating category.
 
-| Customer Segment | Rule | Customers | Sales |
-|---|---|---|---|
-| 🥇 VIP | Lifespan ≥ 12 months and spending > 5,000 | 1,653 | $10.76M |
-| 🥈 Regular | Lifespan ≥ 12 months and spending ≤ 5,000 | 2,200 | $7.50M |
-| 🆕 New | Lifespan < 12 months | 14,629 | $11.09M |
+### 5. Customer Segmentation
 
-![Customer Segments](images/08a_customer_segments.png)
+Customers were classified based on their spending behavior and customer lifespan.
 
-Products are segmented by total sales: **High-Performer** (> 50,000), **Mid-Range** (10,000 to 50,000) and **Low-Performer** (< 10,000). The 66 high performers generate $27.64M of the $29.35M in dated sales.
+| Segment | Customers | Sales |
+|---|---:|---:|
+| 🥇 VIP | 1,653 | $10.76M |
+| 🥈 Regular | 2,200 | $7.50M |
+| 🆕 New | 14,629 | $11.09M |
 
-![Product Segments](images/08b_product_segments.png)
+**Segmentation Rules:**
+- VIP: Lifespan ≥ 12 months and spending > 5,000.
+- Regular: Lifespan ≥ 12 months and spending ≤ 5,000.
+- New: Lifespan < 12 months.
+
+### 6. Product Segmentation
+
+Products were classified based on total sales performance.
+
+| Segment | Criteria |
+|---|---|
+| High Performer | Sales > 50,000 |
+| Mid-Range | Sales between 10,000 and 50,000 |
+| Low Performer | Sales < 10,000 |
+
+**Key Finding:** 66 high-performing products generated $27.64M in sales.
 
 ---
 
-# Part 3: Final Reports (Reusable SQL Views)
+## 📋 Part 3: Business Reporting Views
 
-### 👥 `gold.report_customers`
-Name, age and age group, customer segment, recency, lifespan, orders, sales, quantity, products, **Average Order Value** and **Average Monthly Spend**.
+Created reusable SQL views to simplify customer and product-level reporting.
 
-![Customer Report](images/09_customer_report.png)
+### 👥 Customer Report — `gold.report_customers`
 
-### 📦 `gold.report_products`
-Category, subcategory, cost, product segment, recency, lifespan, orders, sales, quantity, customers, **Average Selling Price**, **Average Order Revenue** and **Average Monthly Revenue**.
+Includes:
+- Customer Name and Age
+- Age Group
+- Customer Segment
+- Recency and Lifespan
+- Total Orders and Sales
+- Total Quantity and Products
+- Average Order Value (AOV)
+- Average Monthly Spend
 
-![Product Report](images/10_product_report.png)
+### 📦 Product Report — `gold.report_products`
+
+Includes:
+- Product Category and Subcategory
+- Product Cost and Segment
+- Recency and Lifespan
+- Total Orders and Sales
+- Total Quantity and Customers
+- Average Selling Price
+- Average Order Revenue
+- Average Monthly Revenue
+
+These views make the analysis reusable and support further business reporting.
+
+---
+
+## 🛠️ Tech Stack & SQL Skills
+
+<p>
+<img src="https://skillicons.dev/icons?i=mysql" height="55" />
+</p>
+
+| Category | Technologies & Concepts |
+|---|---|
+| Database | MySQL 8.0 |
+| Querying | SQL |
+| Data Exploration | INFORMATION_SCHEMA |
+| Joins | INNER JOIN, LEFT JOIN |
+| Aggregations | SUM, AVG, COUNT |
+| Advanced SQL | CTEs, Subqueries |
+| Window Functions | LAG, ROW_NUMBER, SUM OVER, AVG OVER |
+| Conditional Logic | CASE WHEN |
+| Analysis | Trend, Cumulative, Performance |
+| Reporting | SQL Views, UNION ALL |
 
 ---
 
 ## 📁 Repository Structure
 
-```
-SQL-Advanced-Data-Analytics/
-├── SQL_Advanced_Data_Analytics.sql   # EDA + advanced analytics + reports
-├── dataset/
-│   ├── gold_dim_customers.csv
-│   ├── gold_dim_products.csv
-│   └── gold_fact_sales.csv
-├── images/                           # Charts used in this README
+```text
+SQL_Advanced_Data_Analysis_Project-/
+│
+├── SQL_Advanced_Data_Analytics.sql
+│
+├── gold.dim_customers.csv
+├── gold.dim_products.csv
+├── gold.fact_sales.csv
+│
+├── LICENSE
 └── README.md
 ```
 
-## ▶️ How to Run
+---
 
-1. Install **MySQL 8.0+** (CTEs and window functions need 8.0).
-2. Open `SQL_Advanced_Data_Analytics.sql`, set the CSV paths in the setup block (or use Workbench's Table Data Import Wizard) and load the three tables into the `gold` schema.
-3. Run the script section by section.
-4. Query the final views:
-   ```sql
-   SELECT * FROM gold.report_customers;
-   SELECT * FROM gold.report_products;
-   ```
+## ▶️ How to Run This Project
 
-## 💡 What I Learned
+**Prerequisites:**
+- MySQL 8.0 or higher
+- MySQL Workbench (recommended)
 
-- Writing readable, modular SQL with **CTEs**
-- Using **window functions** for running totals, moving averages and YoY comparisons
-- Turning raw data into **business insights** through segmentation and KPIs
-- Validating data quality (duplicate keys, orphan keys, NULL dates) before analysis
-- Packaging analysis into **reusable views** for reporting
+**Steps:**
 
-## 📬 Contact
+1. Clone this repository:
 
-Shruti Kumbhare · [LinkedIn](https://www.linkedin.com/in/shrutikumbhare12/)
+```bash
+git clone https://github.com/analytical-shruti/SQL_Advanced_Data_Analysis_Project-.git
+```
+
+2. Open the project in MySQL Workbench.
+
+3. Create the `gold` database/schema.
+
+4. Import the three CSV files into their respective tables:
+   - `gold.fact_sales`
+   - `gold.dim_customers`
+   - `gold.dim_products`
+
+5. Update the CSV file paths in the SQL setup section if required.
+
+6. Execute `SQL_Advanced_Data_Analytics.sql` section by section.
+
+7. Access the final reporting views:
+
+```sql
+SELECT * FROM gold.report_customers;
+
+SELECT * FROM gold.report_products;
+```
+
+---
+
+## 🎯 Key Learnings
+
+Through this project, I strengthened my ability to:
+
+- Perform end-to-end data exploration using SQL.
+- Write complex queries using CTEs and subqueries.
+- Apply advanced window functions for analytical calculations.
+- Analyze trends and year-over-year business growth.
+- Evaluate customer and product performance.
+- Perform data quality and validation checks.
+- Convert raw data into meaningful business insights.
+- Build reusable SQL views for business reporting.
+
+---
+
+## 👩‍💻 About the Author
+
+**Shruti Kumbhare**
+
+Aspiring Data Analyst | SQL | MySQL | Data Analytics | Business Intelligence
+
+This project reflects my hands-on experience in using SQL to solve analytical problems and translate business data into actionable insights.
+
+---
+
+<p align="center">
+  ⭐ If you find this project useful, consider giving it a star!
+</p>
+
+<p align="center">
+  <b>Thank you for visiting my project!</b>
+</p>
