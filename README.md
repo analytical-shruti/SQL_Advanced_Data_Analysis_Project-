@@ -98,12 +98,9 @@ flowchart LR
 | Total Products | 295 |
 | Total Customers | 18,484 |
 
-### 🏆 Ranking Analysis
-Top and bottom products by revenue (`ORDER BY` + `LIMIT`, `ROW_NUMBER()`):
 
 
 
----
 
 # Part 2: Advanced Analytics
 
